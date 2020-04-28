@@ -1,0 +1,14 @@
+// Customize bootstrap default CSS
+
+$light-blue: #9ACAE4;
+$dark-blue: #011964;
+$blue: #1964AD;
+$background-blue: #C5ECF6;
+$default-border-radius: .6rem;
+
+// Bootstrap override
+$body-color: $blue;
+$body-bg: $background-blue;
+
+// Load rest of bootstrap
+@import "bootstrap/scss/bootstrap";
