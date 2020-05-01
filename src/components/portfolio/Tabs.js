@@ -14,7 +14,7 @@ const Tabs = () => {
             <Row>
                 <Col xs={12}>
                     <nav>
-                        <ul className="nav nav-pills nav-justified grow" id="nav-tab" role="tablist">
+                        <ul className="nav nav-pills nav-justified" id="nav-tab" role="tablist">
                             <li className="nav-item">
                                 <a className="nav-item nav-link active" data-toggle="pill" href="#addrs" role="tab">Addresses</a>
                             </li>
@@ -26,7 +26,7 @@ const Tabs = () => {
                 </Col>
                 <Col xs={12}>
                     <div className="tab-content list-items" id="nav-tabContent">
-                        <div className="tab-pane show active" id="addrs" role="tabpanel" aria-labelledby="nav-home-tab">
+                        <div className="tab-pane show active grow" id="addrs" role="tabpanel" aria-labelledby="nav-home-tab">
                             <AddressList />                    
                         </div>
                         <div className="tab-pane show" id="exchanges" role="tabpanel" aria-labelledby="nav-home-tab">Exchanges</div>
