@@ -1,12 +1,12 @@
 import React from 'react';
 
-import Balance from './Balance';
+import BalanceTotal from './BalanceTotal';
 
 const Metadata = () => {
     return (
         <>
         {/* number_of_components % 2 == 0 */}
-            <Balance />
+            <BalanceTotal />
         </>
     )
 }

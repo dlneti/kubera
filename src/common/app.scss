@@ -7,6 +7,20 @@ body {
     transition: all 0.3s ease;
 }
 
+body::-webkit-scrollbar {
+    width: .8rem;
+}
+
+body::-webkit-scrollbar-track {
+    background: $background-blue;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: $dark-blue;
+    border-radius: 1rem;
+    box-shadow: 1px 1px 5px rgba($dark-blue, 0.8);
+}
+
 a {
     color: inherit;
     text-decoration: inherit;
@@ -39,12 +53,18 @@ a:hover {
 
 .heading {
     margin-bottom: 10px;
+    padding-bottom: 15px;
+    font-weight: 100;
 }
 
-.label {
-    font-weight: 100;
-    font-size: 1.5rem;
+.bold {
+    font-weight: 400;
 }
+
+// .label {
+    
+//     // font-size: 1.5rem;
+// }
 
 .default-border {
     border-radius: $default-border-radius;
@@ -64,10 +84,12 @@ a:hover {
 }
 
 .metadata .amount-crypto {
-    font-size: .8rem;
+    font-size: 1.5rem;
+    font-weight: 400;
 }
 
 .metadata .amount-fiat {
+    font-size: 1.5rem;
     font-weight: 400;
 }
 
@@ -96,7 +118,10 @@ a:hover {
 }
 
 .tabs a.nav-link:not(.active):hover {
-    background-color: $light-blue;
+    // background-color: $light-blue;
+    animation: color-rotate 2s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
 }
 
 .tabs a.nav-link.active {
@@ -173,3 +198,13 @@ a:hover {
 }
 
 /* Shadows END*/
+
+
+@keyframes color-rotate {
+    from {
+        backdrop-filter: hue-rotate(0deg)
+    }
+    to {
+        backdrop-filter: hue-rotate(360deg)
+    }
+}

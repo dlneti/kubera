@@ -8,17 +8,16 @@ import Col from 'react-bootstrap/Col'
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import Balance from './Balance';
+import BalanceWallet from './BalanceWallet';
 
 //Assets
-import { mockData } from '../../common/app.js'
+import { useSelector } from 'react-redux';
 
 const Address = () => {
     const { address } = useParams();
 
-    const addrData = mockData.addresses[address];
+    const addrData = useSelector(state => state.portfolio_data.wallets[address])
     const tokens = addrData.tokens;
-    console.log(tokens)
 
     return (
         <Container>
@@ -33,7 +32,7 @@ const Address = () => {
                 </Col>
             </Row>
             <Row>
-                <Balance />
+                <BalanceWallet address={address} />
             </Row>
             <Row className="shadow-2 list-items default-border">
                 <Col xs={12} className="text-center" style={{marginTop: "10px"}}>

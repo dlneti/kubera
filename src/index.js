@@ -1,19 +1,20 @@
 import React from 'react'
 import { render } from 'react-dom'
+import { Provider } from 'react-redux'
 
 import App from './App.js'
-
+import store from './store'
 
 
 // Assets
 import './common/app.scss'
-
-// import 'bootstrap/scss/bootstrap.scss';
-// import $ from 'jquery';
-// import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
+// console.log(store)
+
 render (
-  <App />,
+  <Provider store={store}>
+    <App />
+  </Provider>,
   document.getElementById('root')
 )

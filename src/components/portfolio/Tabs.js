@@ -7,8 +7,8 @@ const Tabs = () => {
     return (
         <Col xs={12} className="tabs shadow-3">
             <Row>
-                <Col className="text-center">
-                    <h4 className="heading label">Connected Assets</h4>
+                <Col className="text-center heading">
+                    <span>Connected Assets</span>
                 </Col>
             </Row>
             <Row>
