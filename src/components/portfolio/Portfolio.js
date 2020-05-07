@@ -9,22 +9,25 @@ import { useDispatch } from 'react-redux';
 
 import * as actions from '../../actions'
 
+
 const Portfolio = () => {
     const dispatch = useDispatch()
 
-    useEffect(() => {
-        // console.log("dispatching")
-        dispatch(actions.getData())
-    }, [])
-
     // useEffect(() => {
-    //     const fetchData = async () => {
-    //         const res = await fetch('https://us-central1-kubera-cf187.cloudfunctions.net/sup-world-test')
-    //         // const json = await res.json()
-    //         console.log(res)
-    //     }
-    //     fetchData()
-    // })
+    //     // console.log("dispatching")
+    //     dispatch(actions.getData())
+    // }, [])
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await fetch('/api/address')
+            const json = await res.json()
+            console.log("CAN YOU HEAR ME")
+            console.log(json)
+        }
+        fetchData()
+    }, [])
 
     // console.log(data)
 
