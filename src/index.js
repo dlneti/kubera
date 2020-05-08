@@ -3,7 +3,7 @@ import { render } from 'react-dom'
 import { Provider } from 'react-redux'
 
 import App from './App.js'
-import store from './store'
+import configureStore from './store'
 
 
 // Assets
@@ -11,6 +11,8 @@ import './common/app.scss'
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 // console.log(store)
+
+const store = configureStore();
 
 render (
   <Provider store={store}>

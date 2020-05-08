@@ -7,7 +7,9 @@ import Col from 'react-bootstrap/Col';
 import { useSelector } from 'react-redux';
 
 const AddressList = () => {
-    const addresses = useSelector(state => state.portfolio_data.wallets)
+    const addresses = useSelector(state => state.app.portfolio_data.wallets)
+    // const state = useSelector(state => state)
+    // console.log(state)
 
     return (
         <ul className="hover-list">

@@ -16,7 +16,7 @@ import { useSelector } from 'react-redux';
 const Address = () => {
     const { address } = useParams();
 
-    const addrData = useSelector(state => state.portfolio_data.wallets[address])
+    const addrData = useSelector(state => state.app.portfolio_data.wallets[address])
     const tokens = addrData.tokens;
 
     return (

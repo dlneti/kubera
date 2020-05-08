@@ -1,3 +1,5 @@
 node_modules/
 *_BKP*
 *config.js
+*firebase*.json
+secrets.json
