@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { loginUser } from '../../actions/auth';
 import { Redirect } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
+import Header from './Header';
 
 const Login = () => {
     const dispatch = useDispatch()
@@ -11,8 +12,10 @@ const Login = () => {
     const [ password, setPassword ] = useState("");
 
 
-    const handleSubmit = () => {
+    const handleSubmit = event => {
         console.log("Submitting")
+
+        event.preventDefault()
 
         // dispatch login to firebase
 
@@ -41,27 +44,28 @@ const Login = () => {
     } else {
         // Login page
         return (
-            <Container >
-                <form>
-                    <h3>Sign In</h3>
-                    {auth.loginError === true && <h1>Wrong password</h1>}
+                <div>
+                    <Header />
 
-                    <div className="form-group">
-                        <label>Email address</label>
-                        <input type="email" className="form-control" placeholder="Enter email" onChange={handleChange}/>
+                    <div className="login-container">
+                        <div className="login shadow-wide">
+                            <form> 
+                                <h1 className="login-item">Log In</h1>
+                                {/* {auth.loginError === true && <h1>Wrong password</h1>} */}
+
+                                <input type="email" className="login-item" placeholder="Email" onChange={handleChange}/>
+
+                                <input type="password" className="login-item" placeholder="Password" onChange={handleChange} />
+
+                                <button href="#" className="login-item shadow-low" onClick={handleSubmit}>Log in</button>
+                                <span className="login-item">
+                                    <a href="#">Forgot password?</a>
+                                </span>
+                            </form>
+                        </div>
                     </div>
-
-                    <div className="form-group">
-                        <label>Password</label>
-                        <input type="password" className="form-control" placeholder="Enter password" onChange={handleChange} />
-                    </div>
-
-                    <a href="#" className="btn btn-primary btn-block" onClick={handleSubmit}>Submit</a>
-                    <p className="forgot-password text-right">
-                        Forgot <a href="#">password?</a>
-                    </p>
-                </form>
-            </Container>
+                </div>
+                
         )
     }
     

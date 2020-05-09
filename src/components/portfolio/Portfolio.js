@@ -26,8 +26,8 @@ const Portfolio = () => {
     return (
         <Container>
             <Row>
-                <Col xs={12} className="text-right">
-                    <a href="#" onClick={handleLogout}>Logout</a>
+                <Col xs={12} className="text-right ">
+                    <a href="#" className="logout" onClick={handleLogout}>Logout</a>
                 </Col>
             </Row>
             <Row className="text-center">
