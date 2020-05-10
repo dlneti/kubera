@@ -1,33 +1,83 @@
 const fetch = require('node-fetch');
+const { db } = require('../admin');
 const { settings, mockData } = require('../lib/config.js');
 
 const WEI = 1e+18
+const API_KEY = "freekey";
+const API_URL = "https://api.ethplorer.io";
 
 
 const getWalletData = async (req, res) => {
-    // load data from 3rd party
-    let data = _fetchMockData();
 
+    const { user } = req;
+
+    // get current user
+    console.time('getUser');
+    const userData = await _getUserData(user.uid);
+    console.timeEnd('getUser');
+    // console.log(userData)
+    
+    // if now - last cache time is less then specified time period (5 min)
+    // use cached data instead, this way we dont spam the API
+    if (true) {     // dev
+    // if (new Date() - userData.cache_time.toDate() <= 60 * 60 * 1000) {
+        // console.log("Returning cached data!")
+        res.status(200).send(userData.cached_data);
+        return;
+    }
+
+    // load data from 3rd party
+    console.time("fetchData")
+    const data = await _fetchData(userData.wallets.eth);
+    console.timeEnd("fetchData")
 
     console.time('transformData');
     // transform data to our desired structure
-    data = _transformData([data]);
+    const transformedData = _transformData(data);
     console.timeEnd('transformData');
 
-    res.send({"wallet": data})
+
+    res.status(200).send(transformedData);
+
+    // save cached data to db:
+    const userRef = db.collection('users').doc('k5B4dShjINWYb8T1uwblZcnipqb2')
+    const update = await userRef.update({
+        cached_data: transformedData,
+        cache_time: new Date()
+    });
+    console.log(update);
+
 }
 
-const _fetchData = async () => {
-    const url = `${API_URL}/getAddressInfo/${address}?apiKey=freekey`
+const _fetchData = async addresses => {
+    const promises = addresses.map(wallet => _fetchOne(wallet));
+    // console.log(promises);
 
-    const response = await fetch(url)
-    const json = await response.json()
+    const allAddrs = await Promise.all(promises);
+    const allAddrsJSON = await Promise.all(allAddrs.map(res => res.json()));
+    // console.log(allAddrs.map(addr => addr.json()))
+    // console.log(allAddrsJSON);
 
-    return json;
+    return allAddrsJSON
+}
+
+const _fetchOne = id => {
+    console.log(`Fetching address: ${id}`);
+    return fetch(`${API_URL}/getAddressInfo/${id}?apiKey=freekey`)
 }
 
 const _fetchMockData = () => {
     return mockData;
+}
+
+const _getUserData = async id => {
+    try {
+        const user = await db.collection('users').doc(`${id}`).get();
+        return user.data();
+    } catch (err) {
+        console.log(err);
+        return {};
+    }
 }
 
 
@@ -38,53 +88,51 @@ const _transformData = data => {
     let transformedData = {
         balance: _getBalanceTemplate(),
         wallets: {}
-
     };
 
-    data.forEach(element => {
-        let { wallet } = element;
+    data.forEach(wallet => {
+        // let { wallet } = element;
         let { address, tokens } = wallet;
         let { balance } = wallet.ETH;
         let eth_rate  = wallet.ETH.price.rate;
+
+        // init template for transformed wallet structure
         let transformedWallet = {
             balance: _getBalanceTemplate(),
             tokens: [],
         };
 
         // calculate initial balances
-
         let eth_balance_fiat = balance * eth_rate;
 
-        // set eth balances for total balance, we know them immediatelly
+        // set eth and fiat balances of this address for total and address balance, we know them immediatelly
         transformedData.balance.eth.eth = balance;
         transformedData.balance.eth.fiat = eth_balance_fiat;
 
-        // seth eth balances for wallet balance
         transformedWallet.balance.eth.eth = balance;
         transformedWallet.balance.eth.fiat = eth_balance_fiat;
 
+
+        // to know total balance, we need to know total balance of all tokens in the address
         // calculate total and token balance 
         tokens.forEach(token => {
             // calculate token balances
             let { tokenInfo, balance } = token;
             balance /= WEI;     // convert to human readable amount
-            let balance_fiat = false;
             let balance_eth = false;
-
-            if (tokenInfo.price) {
-                balance_fiat = balance * tokenInfo.price.rate;  // token balance in fiat
-                balance_eth = balance_fiat * eth_rate;              // token balance in eth
-            }
+            let balance_fiat = false;
 
             // add token price to total balance and wallet balance
             // if price is available
+            if (tokenInfo.price) {
+                balance_fiat = balance * tokenInfo.price.rate;  // token balance in fiat
+                balance_eth = balance_fiat / eth_rate;              // token balance in eth
+            
+                transformedData.balance.tokens.fiat += balance_fiat;
+                transformedData.balance.tokens.eth += balance_fiat / eth_rate;
 
-            if (balance_fiat) {
-                transformedData.balance.tokens.fiat = balance_fiat;
-                transformedData.balance.tokens.eth = balance_fiat / eth_rate;
-
-                transformedWallet.balance.tokens.fiat = balance_fiat;
-                transformedWallet.balance.tokens.eth = balance_fiat / eth_rate;
+                transformedWallet.balance.tokens.fiat += balance_fiat;
+                transformedWallet.balance.tokens.eth += balance_fiat / eth_rate;
             }
 
             // append new transformed token to wallet
@@ -102,8 +150,8 @@ const _transformData = data => {
         });
 
         // after tokens are summed we can add these values to wallet total balances
-        transformedWallet.balance.total.fiat = transformedData.balance.tokens.fiat + transformedData.balance.eth.fiat
-        transformedWallet.balance.total.eth = transformedData.balance.tokens.eth + transformedData.balance.eth.eth
+        transformedWallet.balance.total.fiat += transformedWallet.balance.tokens.fiat + transformedWallet.balance.eth.fiat
+        transformedWallet.balance.total.eth += transformedWallet.balance.tokens.eth + transformedWallet.balance.eth.eth
 
         // add transformed wallet to portfolio data
         transformedData.wallets[address] = transformedWallet;
@@ -138,7 +186,3 @@ const _getBalanceTemplate = () => {
 module.exports = {
     getWalletData: getWalletData,
 };
-
-
-// debug
-_transformData([mockData])

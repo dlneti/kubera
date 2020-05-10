@@ -33,6 +33,10 @@ svg {
     transition: all .2s ease;
 }
 
+button:focus {
+    outline: none;
+}
+
 .hover-list li:hover {
     transform: scale(1.01);
     opacity: .85;
@@ -69,13 +73,15 @@ a:hover {
 // }
 
 .login-container {
+    position: relative;
+    top: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .login {
-    position: relative;
+    // position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -85,7 +91,7 @@ a:hover {
     padding: 1.5rem;
     width: 420px;
     height: 50vh;
-    top: 5rem;
+    // top: 5rem;
     min-height: 420px;
     margin-top: 10vh;
     // margin-left: auto;
@@ -276,7 +282,7 @@ span.login-item:hover a {
     padding-left: 20px;
     /* border: 2px rgba(156, 201, 238, 0.5) solid; */
     border-radius: 2rem;
-    background-color: $dark-blue;
+    background-color: $blue;
 }
 
 // .list-items li:hover {

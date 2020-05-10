@@ -24,10 +24,10 @@ const AddressList = () => {
                                             <span>{addr}</span>
                                         </Col>
                                         <Col xs={3} className="text-center">
-                                            {addrData.eth_balance.toLocaleString(undefined, {minimumFractionDigits: 6})} Ξ
+                                            {addrData.balance.total.eth.toLocaleString(undefined, {minimumFractionDigits: 6})} Ξ
                                         </Col>
                                         <Col xs={3} className="text-center">
-                                            {addrData.token_balance_fiat.toLocaleString(undefined, {maximumFractionDigits: 2})} $ 
+                                            {addrData.balance.total.fiat.toLocaleString(undefined, {maximumFractionDigits: 2})} $ 
                                         </Col>
                                     </Row>
                                 </Link>

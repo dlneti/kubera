@@ -13,24 +13,12 @@ const Login = () => {
 
 
     const handleSubmit = event => {
-        console.log("Submitting")
-
-        event.preventDefault()
-
-        // dispatch login to firebase
-
-        console.log({email, password})
-        dispatch(loginUser(email, password))
-
+        event.preventDefault()                  // prevent default button action
+        dispatch(loginUser(email, password))    // dispatch login to firebase
     }
 
-    console.log(email, password);
-
     const handleChange = ({ target }) => {
-        // console.log(target, target.value);
-
         const inputType = target.type
-        // console.log(inputType)
 
         if (inputType === 'email') {
             setEmail(target.value)
@@ -51,7 +39,7 @@ const Login = () => {
                         <div className="login shadow-wide">
                             <form> 
                                 <h1 className="login-item">Log In</h1>
-                                {/* {auth.loginError === true && <h1>Wrong password</h1>} */}
+                                {auth.loginError === true && <span className="login-item" style={{color: "#f44336"}}>Email or password are incorrect!</span>}
 
                                 <input type="email" className="login-item" placeholder="Email" onChange={handleChange}/>
 

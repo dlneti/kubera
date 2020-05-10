@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 
 // FA icons
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTimes, faDivide } from '@fortawesome/free-solid-svg-icons'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 // Pages
 import { Portfolio, Address } from './components/Portfolio'
@@ -15,20 +15,10 @@ import Login from './components/Login';
 // FA icons
 library.add(faTimes)
 
-// console.log(firebaseConfig);
-
 const ProtectedRoute = ({ component: Component, ...rest }) => {
   const { isAuthenticated, isVerifying } = useSelector(state => state.auth);
-  console.log(isVerifying)
 
   return (
-    // <Route {...rest} render={props => (
-    //   isVerifying ? ( <div /> ) : 
-    //   isAuthenticated === true
-    //     ? <Component {...props} />
-    //     : <Redirect to='/login' />
-    //   )} 
-    // />
     <Route {...rest} render={props => {
       if (isVerifying) {
         return (
@@ -69,9 +59,6 @@ const App = () => {
       </Switch>
     </Router>
   )
-  // return (
-  //   <h1>...</h1>
-  // )
 }
 
 export default App

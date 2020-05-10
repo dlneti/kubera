@@ -3,10 +3,9 @@ import { useSelector } from 'react-redux';
 import Balance from './Balance.js';
 
 const BalanceTotal = () => {
-    const { total_balance_eth, total_balance_fiat } = useSelector(state => state.app.portfolio_data)
-
+    const { total } = useSelector(state => state.app.portfolio_data.balance)
     return (
-        <Balance crypto={total_balance_eth} fiat={total_balance_fiat} />
+        <Balance crypto={total.eth} fiat={total.fiat} />
     )
 }  
 

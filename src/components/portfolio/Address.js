@@ -16,6 +16,8 @@ import { useSelector } from 'react-redux';
 const Address = () => {
     const { address } = useParams();
 
+    console.log(address);
+
     const addrData = useSelector(state => state.app.portfolio_data.wallets[address])
     const tokens = addrData.tokens;
 
@@ -49,11 +51,11 @@ const Address = () => {
                                                     <span>{token.token_name}</span>
                                                 </Col>
                                                 <Col xs={3}>
-                                                    {token.balance.toLocaleString(undefined, {minimumFractionDigits: 6})}
+                                                    {token.balance.amount.toLocaleString(undefined, {minimumFractionDigits: 6})}
                                                 </Col>
                                                 <Col xs={3}>
                                                     {
-                                                        token.balance_fiat ? token.balance_fiat.toLocaleString(undefined, {maximumFractionDigits: 2}) + " $" : "N/A"
+                                                        token.balance.fiat ? token.balance.fiat.toLocaleString(undefined, {maximumFractionDigits: 2}) + " $" : "N/A"
                                                     }
                                                 </Col>
                                             </Row>

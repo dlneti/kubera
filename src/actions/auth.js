@@ -81,8 +81,7 @@ export const logoutUser = () => async dispatch => {
 
     // try to login user
     try {
-        const signOut = await admin.auth().signOut();
-        console.log(signOut);
+        await admin.auth().signOut();
         dispatch(logoutSuccess())
     } catch (err) {
         // login failed

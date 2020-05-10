@@ -4,9 +4,21 @@ const { DATA_RECEIVED, LOADING, DATA_FAILED } = actions;
 const initialState = {
     current_user: 1,
     portfolio_data: {
-        total_balance_eth: 0,
-        total_balance_fiat: 0,
-        wallets: []
+        wallets: {},
+        balance: {
+            total: {
+                fiat: 0,
+                eth: 0
+            },
+            eth: {
+                fiat: 0,
+                eth: 0
+            },
+            tokens: {
+                fiat: 0,
+                eth: 0
+            },
+        },
     },
     loading: false,
     has_errors: false,
@@ -14,10 +26,9 @@ const initialState = {
 }
 
 const app = (state = initialState, action)  => {
-  console.log(action.type)
+//   console.log(action.type)
   switch (action.type) {
     case LOADING:
-        console.log(LOADING)
         return {...state, loading: true}
     case DATA_RECEIVED:
         return {...state, portfolio_data: {...action.payload}, loading: false, last_request: new Date()}
