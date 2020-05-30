@@ -6,6 +6,7 @@ const WEI = 1e+18
 const API_KEY = "freekey";
 const API_URL = "https://api.ethplorer.io";
 
+const CACHE_TIME = 1000 * 60 * 60 * 2;
 
 const getWalletData = async (req, res) => {
 
@@ -19,9 +20,9 @@ const getWalletData = async (req, res) => {
     
     // if now - last cache time is less then specified time period (5 min)
     // use cached data instead, this way we dont spam the API
-    if (true) {     // dev
-    // if (new Date() - userData.cache_time.toDate() <= 60 * 60 * 1000) {
-        // console.log("Returning cached data!")
+    // if (true) {     // dev
+    if (new Date() - userData.cache_time.toDate() <= CACHE_TIME) {
+        console.log("Returning cached data!")
         res.status(200).send(userData.cached_data);
         return;
     }

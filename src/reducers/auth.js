@@ -21,6 +21,7 @@ const initialState = {
 };
 
 const auth = (state = initialState, action) => {
+    console.log(action)
     switch (action.type) {
         case LOGIN_REQUEST:
             return {

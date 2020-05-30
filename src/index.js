@@ -7,7 +7,8 @@ import configureStore from './store'
 
 
 // Assets
-import './common/css/app.scss'
+// import './common/css/app.scss';
+import './common/css/dashboard.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 // console.log(store)
