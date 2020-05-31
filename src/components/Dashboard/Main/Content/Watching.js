@@ -1,13 +1,40 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import axios from 'axios';
 
 import plus from '../../../../assets/dashboard/plus.svg';
+import { useDispatch, useSelector } from 'react-redux';
+import { requestStreamOpen, requestStreamClose } from '../../../../actions/app';
+import fetcher from '../../../../lib/fetcher';
 
 const Watching = () => {
+    const dispatch = useDispatch();
+    const { data: streamData } = useSelector(state => state.stream)
+    const tickers = [
+        "bnbusdt",
+        "btcusdt",
+        "ethusdt",
+    ].map(ticker => ticker)
+    const tickersQuery = tickers.map(ticker => `${ticker}@ticker`).join("/")
+
+    useEffect(() => {
+        // request open stream
+        dispatch(requestStreamOpen(tickersQuery));
+
+        return () => {
+            dispatch(requestStreamClose());
+        }
+    }, [])
+
+    // dev
+    const onClick = () => {
+        dispatch(requestStreamClose());
+    }
+
     return (
         <div className="watching">
             <div className="heading">
                 <span>watching</span>
-                <button className="add">
+                <button className="add" onClick={onClick}>
                     <img src={plus} alt="Add button" />
                 </button>
             </div>
@@ -17,25 +44,29 @@ const Watching = () => {
                     <span>price</span>
                     <span>change (24h)</span>
                 </div>
-                <div>
-                    <span className="pair">btc / usdt</span>
-                    <span className="price">8954.00</span>
-                    <span className="change red">-1.25 %</span>
-                </div>
-                <div>
-                    <span className="pair">xlm / eth</span>
-                    <span className="price">2.453433</span>
-                    <span className="change green">+2.13 %</span>
-                </div>
-                <div>
-                    <span className="pair">lit / eth</span>
-                    <span className="price">0.123944495</span>
-                    <span className="change green">+89.22 %</span>
-                </div>
+                {
+                    tickers.map(ticker => <WatchingItem ticker={ticker} data={streamData[ticker.toUpperCase()] || {}}/>)
+                }
             </div>
 
         </div>
     )
 };
+
+const WatchingItem = ({ticker, data}) => {
+    return (
+        <div>
+            <span className="pair">{ticker.toUpperCase()}</span>
+            <span className="price">{data.c || ""}</span>
+            <span className="change green">{data.P || ""} %</span>
+        </div>
+    )
+}
+
+// const _fetchWatchedPairs = async pairs => {
+//     const promises = pairs.map(pair => ({
+//         price: 
+//     }))
+// }
 
 export default Watching;

@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+const axios = require('axios');
 const { db } = require('../admin');
 const { settings, mockData } = require('../lib/config.js');
 
@@ -52,19 +52,18 @@ const getWalletData = async (req, res) => {
 
 const _fetchData = async addresses => {
     const promises = addresses.map(wallet => _fetchOne(wallet));
-    // console.log(promises);
 
-    const allAddrs = await Promise.all(promises);
-    const allAddrsJSON = await Promise.all(allAddrs.map(res => res.json()));
-    // console.log(allAddrs.map(addr => addr.json()))
-    // console.log(allAddrsJSON);
+    const _fetchAddrs = await Promise.all(promises);
+    const addrsData = _fetchAddrs.map(addr => addr.data)
 
-    return allAddrsJSON
+    return addrsData;
 }
 
 const _fetchOne = id => {
     console.log(`Fetching address: ${id}`);
-    return fetch(`${API_URL}/getAddressInfo/${id}?apiKey=freekey`)
+    return axios.get(`${API_URL}/getAddressInfo/${id}`, {
+        params: { apiKey: API_KEY }
+    })
 }
 
 const _fetchMockData = () => {

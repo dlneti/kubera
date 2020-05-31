@@ -36,3 +36,9 @@ export const getMinutesAgo = time => {
 
     return Math.floor((new Date() - time) / 1000 / 60)
 }
+
+
+export const parseTickerFromDataFrame = streamName => {
+    const ticker = streamName.split("@")[0].toUpperCase();
+    return ticker;
+}

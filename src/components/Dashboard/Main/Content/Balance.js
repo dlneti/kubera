@@ -10,7 +10,7 @@ import Loading from '../../../Loaders/Loading';
 const Balance = () => {
     const { balance } = useSelector(state => state.app.portfolio_data);
     const { loading } = useSelector(state => state.app);
-    console.log({loading, balance})
+    // console.log({loading, balance})
 
     return ( 
         <div className="balance">

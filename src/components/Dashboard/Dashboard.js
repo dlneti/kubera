@@ -5,7 +5,7 @@ import Main from './Main';
 import { useDispatch, useSelector } from 'react-redux';
 
 // import { logoutUser } from '../../actions/auth'
-import { getPortfolioData, loadingComplete } from '../../actions/app';
+import { initData, loadingComplete } from '../../actions/app';
 
 
 const CACHE_TIME = 60 * 60 * 1000;      // 1hr
@@ -41,10 +41,10 @@ const Dashboard = () => {
     useEffect(() => {
         // is user data already in store?
         let dataIsStale = _dataIsStale();
-        console.log(dataIsStale)
+        // console.log(dataIsStale)
 
         if (dataIsStale) {
-            dispatch(getPortfolioData());
+            dispatch(initData());
         } else {
             dispatch(loadingComplete());
         }

@@ -4,7 +4,7 @@ const { DATA_RECEIVED, LOADING, DATA_FAILED } = actions;
 
 // initial state of app, fallback on cached data in localStorage for persistence
 const initialState = {
-    current_user: 1,
+    current_user: JSON.parse(localStorage.getItem("current_user")) || {},
     portfolio_data: JSON.parse(localStorage.getItem("portfolio_data")) || {},
     loading: true,
     has_errors: false,
@@ -19,7 +19,13 @@ const app = (state = initialState, action)  => {
     case LOADING_COMPLETE:
         return {...state, loading: false}
     case DATA_RECEIVED:
-        return {...state, portfolio_data: {...action.payload}, loading: false, last_request: new Date()}
+        return {
+            ...state,
+            portfolio_data: {...action.payload.walletData},
+            current_user: {...action.payload.userData},
+            loading: false,
+            last_request: new Date()
+        }
     case DATA_FAILED:
         return {...state, hasErrors: true}
     default:

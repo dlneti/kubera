@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const { walletController } = require('../controllers');
+const { walletController: {getWalletData} } = require('../controllers');
 
 const walletRouter = Router();
 
-walletRouter.get('/', walletController.getWalletData);
+walletRouter.get('/', getWalletData);
 
 module.exports = walletRouter;
