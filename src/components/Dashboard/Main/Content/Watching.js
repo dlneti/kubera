@@ -45,7 +45,7 @@ const Watching = () => {
                     <span>change (24h)</span>
                 </div>
                 {
-                    tickers.map(ticker => <WatchingItem ticker={ticker} data={streamData[ticker.toUpperCase()] || {}}/>)
+                    tickers.map(ticker => <WatchingItem key={ticker} ticker={ticker} data={streamData[ticker.toUpperCase()] || {}}/>)
                 }
             </div>
 
@@ -54,19 +54,14 @@ const Watching = () => {
 };
 
 const WatchingItem = ({ticker, data}) => {
+    const color = data.P < 0 ? "red" : "green";
     return (
         <div>
             <span className="pair">{ticker.toUpperCase()}</span>
             <span className="price">{data.c || ""}</span>
-            <span className="change green">{data.P || ""} %</span>
+            <span className={`change ${color}`}>{data.P ? `${data.P} %` : ""}</span>
         </div>
     )
 }
-
-// const _fetchWatchedPairs = async pairs => {
-//     const promises = pairs.map(pair => ({
-//         price: 
-//     }))
-// }
 
 export default Watching;
