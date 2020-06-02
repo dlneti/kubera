@@ -1,6 +1,12 @@
 import axios from 'axios';
 import { admin, db } from "../firebase/firebase";
-import fetcher from '../lib/fetcher.js';
+import fetcher from '../lib/fetcher';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { Action, AnyAction } from 'redux';
+import { RootState } from '../reducers';
+import { userData } from './types';
+import { Dispatch } from 'react';
+// import { AppRootState } from '../reducers/app';
 
 export const LOADING = "LOADING";
 export const LOADING_COMPLETE = "LOADING_COMPLETE";
@@ -8,24 +14,25 @@ export const DATA_RECEIVED = "DATA_RECEIVED";
 export const DATA_FAILED = "DATA_FAILED";
 export const SET_PORTFOLIO_DATA = "SET_PORTFOLO_DATA";
 
-export const dataReceived = payload => ({
+export const dataReceived = (payload: object): AnyAction => ({
     type: DATA_RECEIVED,
     payload: payload
 })
 
-export const loading = () => ({
+export const loading = (): AnyAction => ({
     type: LOADING
 })
 
-export const dataFailed = () => ({
+export const dataFailed = (): AnyAction => ({
     type: DATA_FAILED
 })
 
-export const loadingComplete = () => ({
+export const loadingComplete = (): AnyAction => ({
     type: LOADING_COMPLETE
 })
 
-export const initData = (background = false) => async (dispatch, getState) => {
+export const initData = (background = false): ThunkAction<void, RootState, unknown, Action<string>> => 
+                        async (dispatch: Dispatch<AnyAction>, getState): Promise<void> => {
     // console.log("Fetching fresh data")
     // dispatch LOADING ACTION
     const { auth } = getState();
@@ -41,12 +48,12 @@ export const initData = (background = false) => async (dispatch, getState) => {
             url: "/api/wallet",
         })
         const userPromise = _getUserData(auth.user.uid);
-        const promises = [
+        const promises: Promise<any>[] = [
             walletPromise,
             userPromise
         ];
         const _fetchData = await Promise.all(promises);
-        const _initData = _fetchData.map(response => response.data);
+        const _initData: any[] = _fetchData.map((response) => response.data);
         // console.log(_initData)
 
         const walletData = _initData[0];
@@ -58,7 +65,7 @@ export const initData = (background = false) => async (dispatch, getState) => {
         // save data to localstorage
         localStorage.setItem("portfolio_data", JSON.stringify(walletData));
         localStorage.setItem("current_user", JSON.stringify(userData));
-        localStorage.setItem("last_request", new Date().getTime());
+        localStorage.setItem("last_request", JSON.stringify(new Date().getTime()));
     } catch (error) {
         console.log(error)
         dispatch({
@@ -67,13 +74,19 @@ export const initData = (background = false) => async (dispatch, getState) => {
     }
 }
 
-const _getUserData = async uid => {
+const _getUserData = async (uid: string): Promise<{data: object | undefined}> => {
     const userRef = db.collection('users').doc(uid);
     const getUser = await userRef.get();
     return {data: getUser.data()};
 }
 
-const _transformUserData = userData => {
+type user = {
+    watching: string[];
+    wallets: {};
+    username: string;
+}
+
+const _transformUserData = (userData: user) => {
     return {
         watching: userData.watching,
         wallets: userData.wallets,
@@ -107,7 +120,7 @@ export const streamClosed = () => ({
     type: STREAM_CLOSED
 })
 
-export const streamData = (ticker, data)  => ({
+export const streamData = (ticker: string, data: {})  => ({
     type: STREAM_DATA,
     payload: {
         ticker: ticker,
@@ -115,7 +128,7 @@ export const streamData = (ticker, data)  => ({
     }
 })
 
-export const requestStreamOpen = url => ({
+export const requestStreamOpen = (url: string) => ({
     type: REQUEST_STREAM_OPEN,
     url: url,
 })

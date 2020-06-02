@@ -1,5 +1,9 @@
 import { app } from '../actions';
 import { parseTickerFromDataFrame } from '../lib/helpers';
+import { Dispatch } from 'react';
+import { AnyAction, Middleware, MiddlewareAPI } from 'redux';
+import { AppRootState } from '../reducers/types';
+import { RootState } from '../reducers';
 const {
     STREAM_OPEN,
     STREAM_CONNECTING,
@@ -12,21 +16,21 @@ const {
 
 const STREAM_URL = "wss://stream.binance.com:9443/stream";
 
-let socket = null;
+let socket: WebSocket | null = null;
 
-const onOpen = ({ dispatch }) => (inc) => {
-    console.log(inc);
+const onOpen = ({ dispatch }: MiddlewareAPI) => (e: Event) => {
+    console.log("Stream is open")
+    // console.log(e)    
 }
-const onClose = ({ dispatch }) => (inc) => {
+const onClose = ({ dispatch }: MiddlewareAPI) => (e: CloseEvent)  => {
     console.log("Closing stream");
-    console.log(inc);
+    // console.log("eClosing stream");
 }
-const onError = ({ dispatch }) => (inc) => {
+const onError = ({ dispatch }: MiddlewareAPI) => (e: Event) => {
     console.log("Error");
-    console.log(inc);
 }
 
-const onMessage = ({ dispatch }) => ({data}) => {
+const onMessage = ({ dispatch }: MiddlewareAPI) => ({data}: MessageEvent) => {
     let payload;
     try {
         payload = JSON.parse(data);
@@ -39,7 +43,7 @@ const onMessage = ({ dispatch }) => ({data}) => {
     dispatch(streamData(ticker, payload.data));     // dispatch data frame to reducer
 }
 
-const binanceStream = store => next => action => {
+const binanceStream: Middleware = (store: MiddlewareAPI) => (next: Dispatch<AnyAction>) => (action) => {
     switch (action.type) {
         case REQUEST_STREAM_OPEN:
             if (socket !== null) {
@@ -59,7 +63,11 @@ const binanceStream = store => next => action => {
             break;
         
             case REQUEST_STREAM_CLOSE:
-                socket.close();
+                if (socket !== null) {
+                    socket.close();
+                } else {
+                    console.log("Socket already closed!")
+                }
         default:
             return next(action);
             break;

@@ -8,8 +8,23 @@ import {
     VERIFY_REQUEST,
     VERIFY_SUCCESS
 } from "../actions/auth";
+import { User, AuthState } from "./types";
+import { AnyAction } from "redux";
 
-const initialState = {
+type AuthRootState = {
+    isLoggingIn: boolean;
+    isLoggingOut: boolean;
+    isVerifying: boolean;
+    verifyingError: boolean;
+    loginError: boolean;
+    logoutError: boolean;
+    isAuthenticated: boolean;
+    user: {
+        [key: string]: any;
+    },
+};
+
+const initialState: AuthState = {
     isLoggingIn: false,
     isLoggingOut: false,
     isVerifying: false,
@@ -17,16 +32,16 @@ const initialState = {
     loginError: false,
     logoutError: false,
     isAuthenticated: false,
-    user: {}
+    user: {},
 };
 
-const auth = (state = initialState, action) => {
+const auth = (state = initialState, action: AnyAction): typeof initialState => {
     // console.log(action)
     switch (action.type) {
         case LOGIN_REQUEST:
             return {
                 ...state,
-                isLogginIn: true,
+                isLoggingIn: true,
                 loginError: false
             }
         case LOGIN_SUCCESS:
@@ -46,7 +61,7 @@ const auth = (state = initialState, action) => {
         case LOGOUT_REQUEST:
             return {
                 ...state,
-                isLogginOut: true,
+                isLoggingOut: true,
                 logoutError: false
             }
         case LOGOUT_SUCCESS:

@@ -4,20 +4,21 @@ import { loginUser } from '../../actions/auth';
 import { Redirect } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Header from './Header';
+import { RootState } from '../../reducers';
 
 const Login = () => {
     const dispatch = useDispatch()
-    const auth = useSelector(state => state.auth);
+    const auth = useSelector((state: RootState) => state.auth);
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
 
 
-    const handleSubmit = event => {
+    const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>): void => {
         event.preventDefault()                  // prevent default button action
         dispatch(loginUser(email, password))    // dispatch login to firebase
     }
 
-    const handleChange = ({ target }) => {
+    const handleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
         const inputType = target.type
 
         if (inputType === 'email') {
@@ -45,7 +46,7 @@ const Login = () => {
 
                                 <input type="password" className="login-item" placeholder="Password" onChange={handleChange} />
 
-                                <button href="#" className="login-item shadow-low" onClick={handleSubmit}>Log in</button>
+                                <button className="login-item shadow-low" onClick={handleSubmit}>Log in</button>
                                 <span className="login-item">
                                     <a href="#">Forgot password?</a>
                                 </span>

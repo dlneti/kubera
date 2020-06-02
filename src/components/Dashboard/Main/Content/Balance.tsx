@@ -6,10 +6,12 @@ import bitcoin from '../../../../assets/dashboard/bitcoin.svg';
 import { useSelector } from 'react-redux';
 import { capitalize, parseAmount } from '../../../../lib/helpers';
 import Loading from '../../../Loaders/Loading';
+import { RootState } from '../../../../reducers';
+import { TBalance } from '../../../../reducers/types';
 
-const Balance = () => {
-    const { balance } = useSelector(state => state.app.portfolio_data);
-    const { loading } = useSelector(state => state.app);
+const Balance: React.FC<{}> = () => {
+    const { balance } = useSelector((state: RootState) => state.app.portfolio_data);
+    const { loading } = useSelector((state: RootState) => state.app);
     // console.log({loading, balance})
 
     return ( 
@@ -29,7 +31,18 @@ const Balance = () => {
     )
 }
 
-const BalanceItem = ({ balances, locale, icon }) => {
+type BalanceItemProps = {
+    balances: {
+        [K in "fiat" | "eth"]: number;
+    };
+    locale: number;
+    icon: {
+        icon: string;
+        alt: string;
+    };
+};
+
+const BalanceItem: React.FC<BalanceItemProps> = ({ balances, locale, icon }) => {
     const balanceFiat = parseAmount(balances.fiat, locale);
     const balanceEth = parseAmount(balances.eth, locale);
     return (

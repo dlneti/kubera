@@ -5,10 +5,12 @@ import plus from '../../../../assets/dashboard/plus.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { requestStreamOpen, requestStreamClose } from '../../../../actions/app';
 import fetcher from '../../../../lib/fetcher';
+import { RootState } from '../../../../reducers';
+import { StreamData } from '../../../../reducers/types';
 
 const Watching = () => {
     const dispatch = useDispatch();
-    const { data: streamData } = useSelector(state => state.stream)
+    const { data: streamData } = useSelector((state: RootState) => state.stream)
     const tickers = [
         "bnbusdt",
         "btcusdt",
@@ -53,7 +55,12 @@ const Watching = () => {
     )
 };
 
-const WatchingItem = ({ticker, data}) => {
+type WatchingItemProps = {
+    ticker: string;
+    [K: string]: any;
+};
+
+const WatchingItem: React.FC<WatchingItemProps> = ({ticker, data}) => {
     const color = data.P < 0 ? "red" : "green";
     return (
         <div>

@@ -6,10 +6,16 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import { useSelector } from 'react-redux';
 import Login from './components/Login';
 import { Dashboard } from './components/Dashboard';
+import { RootState } from './reducers';
 
 
-const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const { isAuthenticated, isVerifying } = useSelector(state => state.auth);
+type Props = {
+  component: React.FC;
+  [key: string]: any;
+}
+
+const ProtectedRoute = ({component: C, ...rest}: Props) => {
+  const { isAuthenticated, isVerifying } = useSelector((state: RootState) => state.auth);
 
   return (
     <Route {...rest} render={props => {
@@ -20,7 +26,7 @@ const ProtectedRoute = ({ component: Component, ...rest }) => {
       }
 
       if (isAuthenticated === true) {
-        return <Component {...props} />
+        return <C />
       } 
 
       return <Redirect to='/login' />

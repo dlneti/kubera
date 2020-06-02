@@ -6,15 +6,21 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // import { logoutUser } from '../../actions/auth'
 import { initData, loadingComplete } from '../../actions/app';
+import { RootState } from '../../reducers';
 
 
 const CACHE_TIME = 60 * 60 * 1000;      // 1hr
 const FETCH_INTERVAL = 1000 * 60 * 5    // 5 min
 
+
+type PortfolioData = {
+    balance: {};
+    wallets: string[]
+}
+
 const Dashboard = () => {
     const dispatch = useDispatch()
-    const last_request = useSelector(state => state.app.last_request);
-    const portfolio_data = useSelector(state => state.app.portfolio_data);
+    const { last_request, portfolio_data } = useSelector((state: RootState) => state.app);
     let refreshDataInterval;
 
     // console.log({last_request, portfolio_data})
@@ -29,9 +35,9 @@ const Dashboard = () => {
         if (!last_request || !portfolio_data) return true;
 
         // check if data is in correct format
-        if (!portfolio_data.hasOwnProperty('balance') || !portfolio_data.hasOwnProperty('wallets')) {
-            return true;
-        }
+        // if (!portfolio_data.hasOwnProperty('balance') || !portfolio_data.hasOwnProperty('wallets')) {
+        //     return true;
+        // }
         // if we have fresh data in store we dont need new data
         if (now - last_request > CACHE_TIME) return true;
 

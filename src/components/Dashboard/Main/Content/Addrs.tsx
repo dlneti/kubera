@@ -1,13 +1,19 @@
 import React from 'react';
 
 import plus from '../../../../assets/dashboard/plus.svg';
-import { useSelector } from 'react-redux';
+import { useSelector, DefaultRootState } from 'react-redux';
 import { parseAmount } from '../../../../lib/helpers';
 import Loading from '../../../Loaders/Loading';
+import { RootState } from '../../../../reducers';
+import { Wallet } from '../../../../reducers/types';
+
+// type Address = {
+
+// };
 
 const Addrs = () => {
-    const { wallets } = useSelector(state => state.app.portfolio_data);
-    const { loading } = useSelector(state => state.app);
+    const { wallets } = useSelector((state: RootState) => state.app.portfolio_data);
+    const { loading } = useSelector((state: RootState) => state.app);
     return (
         <div className="addrs">
             <div className="heading">
@@ -19,12 +25,14 @@ const Addrs = () => {
             <div className="addresses-container">
                 { loading && <Loading />}
                 { !loading &&
-                    Object.keys(wallets).map(address => (
-                        <AddrItem 
-                            addr={{...wallets[address], address: address}}
-                            key={address}
-                        />
-                    ))
+                    Object.keys(wallets).map((address: string) => {
+                        const addrData = {...wallets[address]}
+                        return ( <AddrItem 
+                                addr={{addrData, address}}
+                                key={address}
+                            />
+                        )
+                    })
                 }
                 
             </div>
@@ -33,22 +41,36 @@ const Addrs = () => {
 }
 
 
-const AddrItem = ({ addr }) => {
+type AddrItemProps = {
+    addr: {
+        addrData: Wallet;
+        address: string;
+    };
+};
+
+const AddrItem: React.FC<AddrItemProps> = ({ addr }) => {
     return (
         <div>
             <div className="address-heading">
                 { addr.address }
             </div>
             <div className="address-content">
-                <AddressSectionEth balance={addr.balance.eth} />
-                <AddressSectionTokens balance={addr.balance.tokens} tokens={addr.tokens} />
+                <AddressSectionEth balance={addr.addrData.balance.eth} />
+                <AddressSectionTokens balance={addr.addrData.balance.tokens} tokens={addr.addrData.tokens} />
             </div>
         </div>
     ) 
 }
 
-const BalanceAmount = ({amount, locale, icon, type}) => {
-    const balance = parseAmount(amount, locale);
+type BalanceAmountProps = {
+    amount: number;
+    locale: number;
+    icon: string;
+    type: string;
+};
+
+const BalanceAmount: React.FC<BalanceAmountProps> = ({amount, locale, icon, type}) => {
+    const balance: string[] = parseAmount(amount, locale);
     return (
         <div className={`balance-${type}`}>
             <span>{icon}</span>
@@ -57,11 +79,17 @@ const BalanceAmount = ({amount, locale, icon, type}) => {
     )
 }
 
-const AddressSectionTokens = ({balance, tokens}) => {
+
+type AddressSectionProps = {
+    balance: {[key: string]: number;};
+    tokens?: [];
+};
+
+const AddressSectionTokens: React.FC<AddressSectionProps> = ({balance, tokens}) => {
     return (
         <div className="tokens">
             <div className="heading">
-                {`TOKENS (${tokens.length})`}
+                {`TOKENS (${tokens!.length})`}
             </div>
             <BalanceAmount 
                 amount={balance.eth}
@@ -79,7 +107,8 @@ const AddressSectionTokens = ({balance, tokens}) => {
     )
 }
 
-const AddressSectionEth = ({balance}) => {
+
+const AddressSectionEth: React.FC<AddressSectionProps> = ({balance}) => {
     return (
         <div className="eth">
             <div className="heading">

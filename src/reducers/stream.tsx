@@ -1,4 +1,6 @@
 import { app as actions } from '../actions';
+import { AnyAction } from 'redux';
+import { StreamRootState } from './types';
 const {
     STREAM_OPEN,
     STREAM_CONNECTING,
@@ -7,13 +9,13 @@ const {
     STREAM_DATA
 } = actions;
 
-const initialState = {
+const initialState: StreamRootState = {
     data: {},
     loading: true,
     open: false
 }
 
-const stream = (state = initialState, action) => {
+const stream = (state = initialState, action: AnyAction): typeof initialState => {
     switch (action.type) {
         case STREAM_CONNECTING:
             return {...state, loading: true, open: true}

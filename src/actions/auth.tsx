@@ -1,4 +1,9 @@
 import { admin } from '../firebase/firebase';
+import { userData } from './types';
+import { AnyAction, Action } from 'redux';
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from '../reducers';
+import { Dispatch } from 'react';
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
@@ -17,52 +22,52 @@ const requestLogin = () => {
     }
 }
 
-const loginSucess = user => {
+const loginSucess = (user: {}): AnyAction => {
     return {
         type: LOGIN_SUCCESS,
         user
     }
 }
 
-const loginError = () => {
+const loginError = (): AnyAction => {
     return {
         type: LOGIN_FAILURE
     }
 }
 
-const requestLogout = () => {
+const requestLogout = (): AnyAction => {
     return {
         type: LOGOUT_REQUEST
     }
 }
 
-const logoutSuccess = user => {
+const logoutSuccess = (): AnyAction => {
     return {
         type: LOGOUT_SUCCESS,
-        user
+        // user
     }
 }
 
-const logoutError = () => {
+const logoutError = (): AnyAction => {
     return {
         type: LOGOUT_FAILURE
     }
 }
 
-const verifyRequest = () => {
+const verifyRequest = (): AnyAction => {
     return {
         type: VERIFY_REQUEST
     };
 };
   
-const verifySuccess = () => {
+const verifySuccess = (): AnyAction => {
     return {
         type: VERIFY_SUCCESS
     };
 };
 
 
-export const loginUser = (email, password) => async dispatch => {
+export const loginUser = (email: string, password: string): ThunkAction<void, RootState, unknown, Action<string>> => async dispatch => {
     dispatch(requestLogin());
 
     // try to login user
@@ -76,7 +81,7 @@ export const loginUser = (email, password) => async dispatch => {
     }
 }
 
-export const logoutUser = () => async dispatch => {
+export const logoutUser = (): ThunkAction<void, RootState, unknown, Action<string>> => async dispatch => {
     dispatch(requestLogout);
 
     // try to login user
@@ -89,7 +94,7 @@ export const logoutUser = () => async dispatch => {
     }
 }
 
-export const verifyAuth = () => async dispatch => {
+export const verifyAuth = (): ThunkAction<void, RootState, unknown, Action<string>> => async dispatch => {
     dispatch(verifyRequest());
 
     // try to login user
