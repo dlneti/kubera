@@ -12,7 +12,7 @@ export const capitalize = (string: string): string => {
  * @param {number} amount number to be parsed
  * @param {number} locale precision to parse decimal number
  */
-export const parseAmount = (amount: number, locale = 2): string[] => {
+export const parseAmount = (amount: number, locale: number = 2): string[] => {
     if (amount === 0) return ["0"];
     let parsedString = amount.toLocaleString(undefined, {minimumFractionDigits: locale, maximumFractionDigits: locale});
     

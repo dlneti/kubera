@@ -62,12 +62,12 @@ const binanceStream: Middleware = (store: MiddlewareAPI) => (next: Dispatch<AnyA
             // socket.addEventListener('ping', onPing);
             break;
         
-            case REQUEST_STREAM_CLOSE:
-                if (socket !== null) {
-                    socket.close();
-                } else {
-                    console.log("Socket already closed!")
-                }
+        case REQUEST_STREAM_CLOSE:
+            if (socket !== null) {
+                socket.close();
+            } else {
+                console.log("Socket already closed!")
+            }
         default:
             return next(action);
             break;

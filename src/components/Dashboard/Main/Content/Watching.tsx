@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
-import axios from 'axios';
 
 import plus from '../../../../assets/dashboard/plus.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { requestStreamOpen, requestStreamClose } from '../../../../actions/app';
-import fetcher from '../../../../lib/fetcher';
 import { RootState } from '../../../../reducers';
-import { StreamData } from '../../../../reducers/types';
+import { parseAmount } from '../../../../lib/helpers';
 
 const Watching = () => {
     const dispatch = useDispatch();
@@ -62,10 +60,11 @@ type WatchingItemProps = {
 
 const WatchingItem: React.FC<WatchingItemProps> = ({ticker, data}) => {
     const color = data.P < 0 ? "red" : "green";
+    const price = data.c ? parseAmount(+data.c, 8).join('.') : "";
     return (
         <div>
             <span className="pair">{ticker.toUpperCase()}</span>
-            <span className="price">{data.c || ""}</span>
+            <span className="price">{price}</span>
             <span className={`change ${color}`}>{data.P ? `${data.P} %` : ""}</span>
         </div>
     )
