@@ -23,6 +23,7 @@ export interface AuthState {
 export interface AppRootState {
     current_user: {};
     portfolio_data: PortfolioData;
+    symbols: SymbolArr;
     loading: boolean;
     has_errors: boolean;
     last_request: number | null ;
@@ -57,4 +58,18 @@ export type StreamData = {
     [K: string]: {
         [K: string]: any;
     }
+};
+
+
+export type SymbolArr = Symbol[];
+export type Symbol = {
+    symbol: string,
+    status: string,
+    baseAsset: string,
+    baseAssetPrecision: number,
+    quoteAsset: string,
+    quotePrecision: number,
+    quoteAssetPrecision: number,
+    baseCommissionPrecision: number,
+    quoteCommissionPrecision: number,
 };

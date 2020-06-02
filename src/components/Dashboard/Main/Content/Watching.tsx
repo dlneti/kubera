@@ -1,19 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import plus from '../../../../assets/dashboard/plus.svg';
 import { useDispatch, useSelector } from 'react-redux';
+// import { useFuzzy } from 'react-use-fuzzy';
 import { requestStreamOpen, requestStreamClose } from '../../../../actions/app';
 import { RootState } from '../../../../reducers';
 import { parseAmount } from '../../../../lib/helpers';
+import { SymbolArr, Symbol } from '../../../../reducers/types';
 
 const Watching = () => {
     const dispatch = useDispatch();
     const { data: streamData } = useSelector((state: RootState) => state.stream)
+    const [modalHidden, toggleModal] = useState(true);
+
+    // mock
     const tickers = [
         "bnbusdt",
         "btcusdt",
         "ethusdt",
-    ].map(ticker => ticker)
+    ].map(ticker => ticker)         // TODO save this to DB and fetch data from there
+    // const tickers = {  } = useSelector((state: RootState) => state.app)
     const tickersQuery = tickers.map(ticker => `${ticker}@ticker`).join("/")
 
     useEffect(() => {
@@ -25,9 +31,8 @@ const Watching = () => {
         }
     }, [])
 
-    // dev
     const onClick = () => {
-        dispatch(requestStreamClose());
+        toggleModal(!modalHidden);
     }
 
     return (
@@ -48,6 +53,7 @@ const Watching = () => {
                     tickers.map(ticker => <WatchingItem key={ticker} ticker={ticker} data={streamData[ticker.toUpperCase()] || {}}/>)
                 }
             </div>
+            <SymbolSearch hidden={modalHidden}/>
 
         </div>
     )
@@ -66,6 +72,50 @@ const WatchingItem: React.FC<WatchingItemProps> = ({ticker, data}) => {
             <span className="pair">{ticker.toUpperCase()}</span>
             <span className="price">{price}</span>
             <span className={`change ${color}`}>{data.P ? `${data.P} %` : ""}</span>
+        </div>
+    )
+}
+
+type SymbolSearchProps = {
+    hidden: boolean;
+};
+
+const SymbolSearch: React.FC<SymbolSearchProps> = ({hidden}) => {
+    const { symbols: originalSymbols } = useSelector((state: RootState) => state.app);
+    const [ symbols, setSymbols ] = useState<SymbolArr>(originalSymbols);
+    
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        let search = originalSymbols.filter((symbol) => {
+            let rgx = new RegExp(`${e.target.value}`, 'i');
+            let match = symbol.symbol.match(rgx);
+            if (match === null) return false;
+            return match.length > 0;
+        })
+        setSymbols(search)
+    }
+
+    return (
+        <div className={`symbol-search ${hidden ? "hidden": ""}`}>
+            <input type="text" placeholder="Search for pair" onChange={handleChange}/>
+            <div className="symbols">
+                {symbols.map(symbol => {
+                    return ( <SymbolElement key={symbol.symbol} symbol={symbol} /> )
+                })}
+            </div>
+        </div>
+    )
+}
+
+
+type SymbolItemProps = {
+    symbol: Symbol;
+};
+
+const SymbolElement: React.FC<SymbolItemProps> = ({symbol}) => {
+    return (
+        <div data-symbol={symbol.symbol}>
+            <span>{symbol.symbol}</span>
+            <button>Add</button>
         </div>
     )
 }

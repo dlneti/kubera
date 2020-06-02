@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import Login from './components/Login';
 import { Dashboard } from './components/Dashboard';
 import { RootState } from './reducers';
+import { SymbolSearch } from './components/Misc';
 
 
 type Props = {
@@ -42,6 +43,7 @@ const App = () => {
       <Switch>
         <Route path="/login" exact component={Login} />
         <ProtectedRoute path="/" exact component={Dashboard} />
+        <ProtectedRoute path="/dev" exact component={SymbolSearch} />
       </Switch>
     </Router>
   )

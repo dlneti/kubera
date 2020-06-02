@@ -34,4 +34,20 @@ const _mapSymbolsToPromises = symbols => {
 }
 
 
-module.exports = { getWatching };
+const getAllSymbols = async (req, res) => {
+    const request = {
+        url: `${API_URL}/ticker/24hr`,
+        method: 'GET',
+    };
+    try {
+        const fetchSymbols = await axios(request);
+        // const symbolsData = fetchSymbols.map(s => s.data);
+        res.status(200).send(JSON.stringify(fetchSymbols.data))
+    } catch (err) {
+        console.log(err.message)
+        res.status(400).send("Bad response from 3rd party");
+    }
+}
+
+
+module.exports = { getWatching, getAllSymbols };

@@ -47,10 +47,14 @@ export const initData = (background = false): ThunkAction<void, RootState, unkno
         const walletPromise = fetcher({
             url: "/api/wallet",
         })
+        const symbolsPromise = fetcher({
+            url: "/api/meta/symbols"
+        })
         const userPromise = _getUserData(auth.user.uid);
         const promises: Promise<any>[] = [
             walletPromise,
-            userPromise
+            userPromise,
+            symbolsPromise,
         ];
         const _fetchData = await Promise.all(promises);
         const _initData: any[] = _fetchData.map((response) => response.data);
@@ -58,13 +62,15 @@ export const initData = (background = false): ThunkAction<void, RootState, unkno
 
         const walletData = _initData[0];
         const userData = _transformUserData(_initData[1]);
+        const symbolsData = _initData[2].symbols;
 
         // dispatch DATA_LOADED action when data is loaded
-        dispatch(dataReceived({walletData, userData}))
+        dispatch(dataReceived({walletData, userData, symbolsData}))
 
         // save data to localstorage
         localStorage.setItem("portfolio_data", JSON.stringify(walletData));
         localStorage.setItem("current_user", JSON.stringify(userData));
+        localStorage.setItem("symbols_data", JSON.stringify(symbolsData));
         localStorage.setItem("last_request", JSON.stringify(new Date().getTime()));
     } catch (error) {
         console.log(error)

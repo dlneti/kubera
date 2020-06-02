@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { getMinutesAgo } from '../../lib/helpers';
 import { RootState } from '../../reducers';
 
+import SymbolSearch from './Dev';
+
 
 export const LastRefreshed = () => {
     const { last_request: lastRefreshed } = useSelector((state: RootState) => state.app)
@@ -24,3 +26,5 @@ export const LastRefreshed = () => {
         </div>
     )   
 }
+
+export { SymbolSearch } ;

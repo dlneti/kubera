@@ -9,6 +9,7 @@ const { DATA_RECEIVED, LOADING, DATA_FAILED } = actions;
 const initialState: AppRootState = {
     current_user: JSON.parse(localStorage.getItem("current_user") || "{}"),
     portfolio_data: JSON.parse(localStorage.getItem("portfolio_data") || "{}"),
+    symbols: JSON.parse(localStorage.getItem("symbols_data") || "[]"),
     loading: true,
     has_errors: false,
     last_request: +localStorage.getItem("last_request")! || null,
@@ -26,6 +27,7 @@ const app = (state: AppRootState = initialState, action: AnyAction ): typeof ini
             ...state,
             portfolio_data: {...action.payload.walletData},
             current_user: {...action.payload.userData},
+            symbols: [...action.payload.symbolsData],
             loading: false,
             last_request: new Date().getTime(),
         }
