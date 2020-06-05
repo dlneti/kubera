@@ -1,9 +1,8 @@
 import { admin } from '../firebase/firebase';
-import { userData } from './types';
 import { AnyAction, Action } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { RootState } from '../reducers';
-import { Dispatch } from 'react';
+import { User } from '../reducers/types';
 
 export const LOGIN_REQUEST = "LOGIN_REQUEST";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
@@ -22,10 +21,10 @@ const requestLogin = () => {
     }
 }
 
-const loginSucess = (user: {}): AnyAction => {
+const loginSucess = (user: User): AnyAction => {
     return {
         type: LOGIN_SUCCESS,
-        user
+        payload: user
     }
 }
 
@@ -44,7 +43,6 @@ const requestLogout = (): AnyAction => {
 const logoutSuccess = (): AnyAction => {
     return {
         type: LOGOUT_SUCCESS,
-        // user
     }
 }
 
@@ -73,7 +71,7 @@ export const loginUser = (email: string, password: string): ThunkAction<void, Ro
     // try to login user
     try {
         const user = await admin.auth().signInWithEmailAndPassword(email, password);
-        console.log(user);
+        // console.log(user);
         dispatch(loginSucess(user))
     } catch (err) {
         // login failed

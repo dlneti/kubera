@@ -12,25 +12,22 @@
 }
 
 /* Scrollbar */
-::-webkit-scrollbar-track
-{
+::-webkit-scrollbar-track {
     background-color: transparent;
 }
 
-::-webkit-scrollbar
-{
+::-webkit-scrollbar {
     width: 12px;
     background-color: transparent;
 }
 
-::-webkit-scrollbar-thumb
-{
+::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: rgb(38, 43, 107);
 }
-    
+
 
 /*================== MAIN Start ==================*/
 
@@ -41,7 +38,8 @@ body {
     color: var(--text-primary);
     font-family: 'Montserrat', sans-serif;
     overflow: overlay;
-    
+    overflow-x: hidden;
+
 }
 
 li {
@@ -72,7 +70,8 @@ button:hover {
 }
 
 .hidden {
-    display: none !important;
+    /* display: none !important; */
+    opacity: 0 !important;
 }
 
 /*================== NAVBAR Start ==================*/
@@ -82,7 +81,7 @@ button:hover {
     height: 100vh;
     width: 16rem;
     transition: width 600ms ease;
-    box-shadow:  10px 0px 25px #2D355F;
+    box-shadow: 10px 0px 25px #2D355F;
 }
 
 .navbar-nav {
@@ -111,7 +110,7 @@ button:hover {
 
 .nav-img {
     width: 6rem;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
 }
@@ -189,10 +188,10 @@ button:hover {
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 32rem 15rem 15rem;
     grid-gap: 1rem;
-    grid-template-areas: 
-    "balance visual watching"
-    "addrs addrs addrs"
-    "addrs addrs addrs";
+    grid-template-areas:
+        "balance visual watching"
+        "addrs addrs addrs"
+        "addrs addrs addrs";
 }
 
 .last-refreshed {
@@ -207,16 +206,19 @@ button:hover {
 .balance {
     grid-area: 'balance';
 }
+
 .watching {
     grid-area: 'watching';
     /* grid-column: 3 / 4;
     grid-row: 1 / span 3; */
 }
+
 .addrs {
     grid-area: 'addrs';
     grid-column: 1 / span 3;
     grid-row: 2 / 4;
 }
+
 .visual {
     grid-area: 'visual';
 }
@@ -243,7 +245,7 @@ button:hover {
     top: 1rem;
 }
 
-button.add{
+button.add {
     transform: scale(.8);
 }
 
@@ -294,6 +296,7 @@ small {
 .visual .card-items>div {
     width: 7rem;
 }
+
 .visual img {
     fill: var(--text-secondary);
 }
@@ -315,12 +318,12 @@ small {
     justify-content: center;
 }
 
-.addresses-container>div{
+.addresses-container>div {
     /* background: linear-gradient(180deg, #0F5995 0%, #0D3C62 80.73%); */
     background-image: url('../../assets/dashboard/wallet-7.jpg');
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0, 0, 0, 0.7);
     box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.7);
     border-radius: 25px;
     height: 12.32rem;
@@ -333,7 +336,7 @@ small {
 
 .address-heading {
     padding: .8rem .8rem;
-    
+
     /* ellipsis */
     white-space: nowrap;
     overflow: hidden;
@@ -352,9 +355,9 @@ small {
     justify-content: space-around;
 }
 
-.address-content>div{
+.address-content>div {
     height: 100%;
-    width : 50%;
+    width: 50%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -362,7 +365,7 @@ small {
     padding: 0 1rem;
 }
 
-.address-content .heading{
+.address-content .heading {
     font-size: .8rem;
     font-weight: 600;
     align-self: center;
@@ -380,19 +383,22 @@ small {
     font-size: var(--font-size-primary);
 }
 
-.address-content .balance-fiat, .address-content .balance-crypto {
+.address-content .balance-fiat,
+.address-content .balance-crypto {
     display: flex;
     justify-content: space-between;
-    align-items: baseline; 
+    align-items: baseline;
     width: 100%;
 }
 
-.address-content .balance-fiat>div, .address-content .balance-crypto>div {
+.address-content .balance-fiat>div,
+.address-content .balance-crypto>div {
     width: 100%;
     text-align: center;
 }
 
-.address-content .balance-fiat>span, .address-content .balance-crypto>span {
+.address-content .balance-fiat>span,
+.address-content .balance-crypto>span {
     margin-left: 2rem;
 }
 
@@ -412,7 +418,6 @@ small {
     display: flex;
     align-content: center;
     justify-content: space-between;
-
     width: 100%;
     text-align: center;
 }
@@ -420,6 +425,16 @@ small {
 .watching .card-items>div>span {
     width: 100%;
     padding: .5rem 0;
+}
+
+.watching .card-items>div>span:first-child {
+    position: absolute;
+    left: 1rem;
+    width: fit-content;
+}
+
+.watching .card-items>div>span:first-child:hover {
+    cursor: pointer;
 }
 
 .watching .card-items .heading {
@@ -436,7 +451,7 @@ small {
 /*  Watching modal START */
 .symbol-search {
     position: absolute;
-    right: 3rem;
+    right: 3.5rem;
     top: 3rem;
     background-color: var(--bg-navbar);
     box-shadow: 0px 5px 15px 2px var(--bg-navbar);
@@ -451,6 +466,12 @@ small {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    transition: all .2s ease-in-out;
+}
+
+.symbol-search.hidden {
+    right: -30rem;
+    transform: rotateX(180deg);
 }
 
 .symbol-search input {
@@ -460,6 +481,11 @@ small {
     border-radius: 2rem;
     padding: 0.5rem 1rem;
     width: 90%;
+}
+
+.symbol-search input::placeholder {
+    color: var(--text-secondary);
+    opacity: .5;
 }
 
 .symbol-search input:focus {
@@ -480,13 +506,16 @@ small {
     color: var(--text-primary);
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    padding: 5px 0px;
-    width: 100%;
+    justify-content: center;
+    padding: 5px 5px;
+    width: 95%;
+    transition: all .3s ease;
 }
 
 .symbol-search .symbols>div:hover {
     cursor: default;
+    border-left: 3px var(--text-secondary) solid;
+    padding-left: 10px;
 }
 
 .symbol-search .symbols>div>button {
@@ -494,14 +523,16 @@ small {
     color: var(--text-secondary);
     border: 1px var(--text-secondary) solid;
     border-radius: 2rem;
-    padding: 2px 10px;
+    padding: 5px 10px;
     transition: .2s ease-in-out;
+    font-size: .7rem;
 }
 
 .symbol-search .symbols>div>button:hover {
     transform: scale(1.1);
     background-color: rgba(240, 242, 238, 0.3);
 }
+
 /*  Watching modal END */
 
 /*================== CONTENT End ==================*/

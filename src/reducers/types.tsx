@@ -21,7 +21,7 @@ export interface AuthState {
 }
 
 export interface AppRootState {
-    current_user: {};
+    user_data: User;
     portfolio_data: PortfolioData;
     symbols: SymbolArr;
     loading: boolean;

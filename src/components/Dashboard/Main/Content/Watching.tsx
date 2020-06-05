@@ -1,38 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import plus from '../../../../assets/dashboard/plus.svg';
 import { useDispatch, useSelector } from 'react-redux';
 // import { useFuzzy } from 'react-use-fuzzy';
-import { requestStreamOpen, requestStreamClose } from '../../../../actions/app';
+import { requestStreamOpen, requestStreamClose, updateWatching } from '../../../../actions/app';
 import { RootState } from '../../../../reducers';
 import { parseAmount } from '../../../../lib/helpers';
-import { SymbolArr, Symbol } from '../../../../reducers/types';
+import { SymbolArr, Symbol, StreamData } from '../../../../reducers/types';
 
 const Watching = () => {
     const dispatch = useDispatch();
     const { data: streamData } = useSelector((state: RootState) => state.stream)
-    const [modalHidden, toggleModal] = useState(true);
-
-    // mock
-    const tickers = [
-        "bnbusdt",
-        "btcusdt",
-        "ethusdt",
-    ].map(ticker => ticker)         // TODO save this to DB and fetch data from there
-    // const tickers = {  } = useSelector((state: RootState) => state.app)
-    const tickersQuery = tickers.map(ticker => `${ticker}@ticker`).join("/")
-
+    const [ modalHidden, toggleModal ] = useState(true);
+    const { user_data: { watching } } = useSelector((state: RootState) => state.app)
+    const tickersQuery = watching.map((ticker: string) => `${ticker.toLowerCase()}@ticker`).join("/")
+    
     useEffect(() => {
+        // console.log({watching})
         // request open stream
         dispatch(requestStreamOpen(tickersQuery));
+
+        // bind evt listeners
+        document.addEventListener('keydown', handleKeyPress);
 
         return () => {
             dispatch(requestStreamClose());
         }
     }, [])
 
+    // toggle modal handler
     const onClick = () => {
         toggleModal(!modalHidden);
+    }
+
+    // close modal on ESC
+    const handleKeyPress = (e: KeyboardEvent) => {
+        if (e.keyCode === 27) {
+            toggleModal(true);
+        }
     }
 
     return (
@@ -45,15 +50,22 @@ const Watching = () => {
             </div>
             <div className="card-items">
                 <div className="heading">
+                    <span></span>
                     <span>pair</span>
                     <span>price</span>
                     <span>change (24h)</span>
                 </div>
                 {
-                    tickers.map(ticker => <WatchingItem key={ticker} ticker={ticker} data={streamData[ticker.toUpperCase()] || {}}/>)
+                    watching.map((ticker: string) => <WatchingItem
+                            key={ticker}
+                            ticker={ticker}
+                            data={streamData[ticker.toUpperCase()] || {}}
+                            modalHandler={onClick}
+                        />
+                    )
                 }
             </div>
-            <SymbolSearch hidden={modalHidden}/>
+            <SymbolSearch hidden={modalHidden} modalHandler={onClick}/>
 
         </div>
     )
@@ -61,14 +73,22 @@ const Watching = () => {
 
 type WatchingItemProps = {
     ticker: string;
-    [K: string]: any;
+    data: Record<string, any>;
+    modalHandler: () => void;
 };
 
 const WatchingItem: React.FC<WatchingItemProps> = ({ticker, data}) => {
+    const dispatch = useDispatch();
     const color = data.P < 0 ? "red" : "green";
     const price = data.c ? parseAmount(+data.c, 8).join('.') : "";
+
+    const handleClick = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
+        dispatch(updateWatching(ticker.toUpperCase(), false))
+    }
+    // TODO: show remove button only on hover
     return (
         <div>
+            <span onClick={handleClick}>X</span>
             <span className="pair">{ticker.toUpperCase()}</span>
             <span className="price">{price}</span>
             <span className={`change ${color}`}>{data.P ? `${data.P} %` : ""}</span>
@@ -78,11 +98,38 @@ const WatchingItem: React.FC<WatchingItemProps> = ({ticker, data}) => {
 
 type SymbolSearchProps = {
     hidden: boolean;
+    modalHandler: () => void;
 };
 
-const SymbolSearch: React.FC<SymbolSearchProps> = ({hidden}) => {
+const SymbolSearch: React.FC<SymbolSearchProps> = ({ hidden, modalHandler }) => {
     const { symbols: originalSymbols } = useSelector((state: RootState) => state.app);
     const [ symbols, setSymbols ] = useState<SymbolArr>(originalSymbols);
+    const [ firstRender, setFirstRender] = useState(true);
+    const mainRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        mainRef.current?.addEventListener('animationend', handleAnimation);
+
+        // cleanup
+        return () => {  
+            mainRef.current?.removeEventListener('animationend', handleAnimation);
+        }
+    }, [])
+
+    const handleAnimation = (e: AnimationEvent) => {
+        // console.log(e)
+        const target = e.target as HTMLDivElement;
+        switch (e.animationName) {
+            case "fadeOutRight":
+                    target.classList.add("hidden")
+                break;
+            case "fadeInRight":
+                    target.classList.remove("hidden")
+                break;
+            default:
+                break;
+        };
+    }
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         let search = originalSymbols.filter((symbol) => {
@@ -94,12 +141,13 @@ const SymbolSearch: React.FC<SymbolSearchProps> = ({hidden}) => {
         setSymbols(search)
     }
 
+    const className = hidden ? "hidden": "";
     return (
-        <div className={`symbol-search ${hidden ? "hidden": ""}`}>
-            <input type="text" placeholder="Search for pair" onChange={handleChange}/>
+        <div className={`symbol-search ${className}`} ref={mainRef}>
+            <input type="text" placeholder="Search for pair" onChange={handleChange} />
             <div className="symbols">
                 {symbols.map(symbol => {
-                    return ( <SymbolElement key={symbol.symbol} symbol={symbol} /> )
+                    return ( <SymbolElement key={symbol.symbol} symbol={symbol} modalHandler={modalHandler}/> )
                 })}
             </div>
         </div>
@@ -109,13 +157,19 @@ const SymbolSearch: React.FC<SymbolSearchProps> = ({hidden}) => {
 
 type SymbolItemProps = {
     symbol: Symbol;
+    modalHandler: () => void;
 };
 
-const SymbolElement: React.FC<SymbolItemProps> = ({symbol}) => {
+const SymbolElement: React.FC<SymbolItemProps> = ({symbol, modalHandler}) => {
+    const dispatch = useDispatch();
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        dispatch(updateWatching(symbol.symbol))
+        modalHandler()  // toggle modal
+    }
     return (
         <div data-symbol={symbol.symbol}>
             <span>{symbol.symbol}</span>
-            <button>Add</button>
+            <button onClick={handleClick}>Add</button>
         </div>
     )
 }

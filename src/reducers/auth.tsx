@@ -8,21 +8,9 @@ import {
     VERIFY_REQUEST,
     VERIFY_SUCCESS
 } from "../actions/auth";
-import { User, AuthState } from "./types";
+import { AuthState } from "./types";
 import { AnyAction } from "redux";
 
-type AuthRootState = {
-    isLoggingIn: boolean;
-    isLoggingOut: boolean;
-    isVerifying: boolean;
-    verifyingError: boolean;
-    loginError: boolean;
-    logoutError: boolean;
-    isAuthenticated: boolean;
-    user: {
-        [key: string]: any;
-    },
-};
 
 const initialState: AuthState = {
     isLoggingIn: false,
@@ -49,7 +37,7 @@ const auth = (state = initialState, action: AnyAction): typeof initialState => {
                 ...state,
                 isLoggingIn: false,
                 isAuthenticated: true,
-                user: action.user
+                user: action.payload
             }
         case LOGIN_FAILURE:
             return {
@@ -69,7 +57,7 @@ const auth = (state = initialState, action: AnyAction): typeof initialState => {
                 ...state,
                 isLoggingOut: false,
                 isAuthenticated: false,
-                user: {}
+                // user: {}
             }
         case LOGOUT_FAILURE:
             return {
