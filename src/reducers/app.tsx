@@ -1,5 +1,5 @@
 import { app as actions } from '../actions'
-import { SET_PORTFOLIO_DATA, LOADING_COMPLETE, SET_USER_DATA, UPDATE_WATCHING } from '../actions/app';
+import { LOADING_COMPLETE, UPDATE_WATCHING } from '../actions/app';
 import { AppRootState } from './types';
 import { AnyAction } from 'redux';
 
@@ -11,7 +11,10 @@ const initialState: AppRootState = {
     portfolio_data: JSON.parse(localStorage.getItem("portfolio_data") || "{}"),
     symbols: JSON.parse(localStorage.getItem("symbols_data") || "[]"),
     loading: true,
-    has_errors: false,
+    has_errors: {
+        status: false,
+        error: null,
+    },
     last_request: +localStorage.getItem("last_request")! || null,
 }
 
@@ -29,14 +32,13 @@ const app = (state: AppRootState = initialState, action: AnyAction ): typeof ini
             user_data: {...action.payload.userData},
             symbols: [...action.payload.symbolsData],
             loading: false,
+            has_errors: {...state.has_errors, status: false, error: null},
             last_request: new Date().getTime(),
         }
     case DATA_FAILED:
-        return {...state, has_errors: true}
+        return {...state, has_errors: {...state.has_errors, status: true, error: action.payload}, loading: false}
     case UPDATE_WATCHING:
         return {...state, user_data: {...state.user_data, watching: action.payload}}
-    // case SET_USER_DATA:
-    //     return {...state, user_data: action.payload}
     default:
       return state;
   }

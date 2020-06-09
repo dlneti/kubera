@@ -30,14 +30,17 @@ const Dashboard = () => {
      */
     const _dataIsStale = () => {
         const now = new Date().getTime();
+
+        // const conditions: boolean[] = [
+        //     !last_request || !portfolio_data,
+        //     now - last_request! > CACHE_TIME
+        // ];
+
+        // return conditions.every((condition: boolean) => condition);
         
         // if there aren't any of these, we need new data
         if (!last_request || !portfolio_data) return true;
 
-        // check if data is in correct format
-        // if (!portfolio_data.hasOwnProperty('balance') || !portfolio_data.hasOwnProperty('wallets')) {
-        //     return true;
-        // }
         // if we have fresh data in store we dont need new data
         if (now - last_request > CACHE_TIME) return true;
 

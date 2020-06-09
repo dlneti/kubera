@@ -1,3 +1,5 @@
+@import './animations.css';
+
 :root {
     --bg-main: linear-gradient(270deg, #2D355F 0.94%, #2D3D77 42.43%, #294590 81.79%);
     --bg-navbar: #2D355F;
@@ -9,6 +11,7 @@
 
     font-size: var(--font-size-primary);
     transition: all .5s ease;
+    animation-duration: .3s;
 }
 
 /* Scrollbar */
@@ -70,8 +73,8 @@ button:hover {
 }
 
 .hidden {
-    /* display: none !important; */
-    opacity: 0 !important;
+    display: none !important;
+    /* opacity: 0 !important; */
 }
 
 /*================== NAVBAR Start ==================*/
@@ -420,6 +423,7 @@ small {
     justify-content: space-between;
     width: 100%;
     text-align: center;
+    position: relative;
 }
 
 .watching .card-items>div>span {
@@ -427,14 +431,26 @@ small {
     padding: .5rem 0;
 }
 
-.watching .card-items>div>span:first-child {
+.watching .card-items>div>button.remove {
     position: absolute;
-    left: 1rem;
-    width: fit-content;
+    right: .5rem;
+    top: .3rem;
+    width: 1.8rem;
+    height: 1.8rem;
 }
 
-.watching .card-items>div>span:first-child:hover {
+.watching .card-items>div>button.remove img {
+    transition: all .3s ease-in-out;
+    opacity: .5;
+}
+
+.watching .card-items>div>button.remove:hover {
     cursor: pointer;
+    animation: pulse ease-in-out .5s;
+}
+
+.watching .card-items>div>button.remove:hover img {
+    opacity: 1;
 }
 
 .watching .card-items .heading {

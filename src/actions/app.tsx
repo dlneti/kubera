@@ -4,6 +4,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { RootState } from '../reducers';
 import { User } from '../reducers/types';
+import { FirebaseError } from "firebase";
 
 export const LOADING = "LOADING";
 export const LOADING_COMPLETE = "LOADING_COMPLETE";
@@ -27,8 +28,9 @@ export const loading = (): AnyAction => ({
     type: LOADING
 })
 
-export const dataFailed = (): AnyAction => ({
-    type: DATA_FAILED
+export const dataFailed = (error: FirebaseError): AnyAction => ({
+    type: DATA_FAILED,
+    payload: error,
 })
 
 export const loadingComplete = (): AnyAction => ({
@@ -101,9 +103,7 @@ export const initData = (background = false): ThunkAction<void, RootState, unkno
         localStorage.setItem("last_request", JSON.stringify(new Date().getTime()));
     } catch (error) {
         console.log(error)
-        dispatch({
-            type: DATA_FAILED
-        })
+        dispatch(dataFailed(error))
     }
 }
 

@@ -1,3 +1,5 @@
+import { FirebaseError } from "firebase";
+
 export type Balances = {
     total: {};
     eth: {};
@@ -24,8 +26,11 @@ export interface AppRootState {
     user_data: User;
     portfolio_data: PortfolioData;
     symbols: SymbolArr;
+    has_errors: {
+        status: boolean;
+        error: FirebaseError | null;
+    };
     loading: boolean;
-    has_errors: boolean;
     last_request: number | null ;
 };
 
